@@ -4,9 +4,28 @@ const ProductTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [editRow, setEditRow] = useState(null);
   const [editedProduct, setEditedProduct] = useState({});
-  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [formData, setFormData] = useState({
+    category: '',
+    productName: '',
+    productDescription: '',
+    reOrderLevel: '',
+    expireAlertDays: '',
+    gst: true,
+    hst: true,
+    vat: true,
+    tax: true,
+    productCode: '',
+    useScale: true,
+    quantity: '',
+    unitOfScale: 'kg',
+    location: '',
+    rackName: '',
+    rackColumn: '',
+    rackRow: ''
+  });
 
-  // Sample data - replace with your actual data
   const [products, setProducts] = useState([
     {
       id: 1,
@@ -98,28 +117,115 @@ const ProductTable = () => {
     }
   ]);
 
+  const handleAddClick = () => {
+    setFormData({
+      category: '',
+      productName: '',
+      productDescription: '',
+      reOrderLevel: '',
+      expireAlertDays: '',
+      gst: true,
+      hst: true,
+      vat: true,
+      tax: true,
+      productCode: '',
+      useScale: true,
+      quantity: '',
+      unitOfScale: 'kg',
+      location: '',
+      rackName: '',
+      rackColumn: '',
+      rackRow: ''
+    });
+    setShowAddModal(true);
+  };
+
   const handleEditClick = (product, index) => {
     setEditRow(index);
     setEditedProduct({ ...product });
-    setShowModal(true);
+    setShowEditModal(true);
   };
 
-  const handleSave = () => {
+  const handleAddSave = () => {
+    const newProduct = {
+      id: products.length + 1,
+      name: formData.productName,
+      code: formData.productCode,
+      barcode: '', // Not in form, default to empty
+      category: formData.category,
+      tax: [formData.gst && 'GST', formData.hst && 'HST', formData.vat && 'VAT', formData.tax && 'Tax']
+        .filter(Boolean)
+        .join(' / ') || 'Not Applied',
+      price: '', // Not in form, default to empty
+      store: formData.quantity ? `${formData.quantity} In Stock` : 'Not Available',
+      warehouse: formData.location ? `${formData.location} In Stock` : 'Not Available'
+    };
+    setProducts([...products, newProduct]);
+    setShowAddModal(false);
+    setFormData({
+      category: '',
+      productName: '',
+      productDescription: '',
+      reOrderLevel: '',
+      expireAlertDays: '',
+      gst: true,
+      hst: true,
+      vat: true,
+      tax: true,
+      productCode: '',
+      useScale: true,
+      quantity: '',
+      unitOfScale: 'kg',
+      location: '',
+      rackName: '',
+      rackColumn: '',
+      rackRow: ''
+    });
+  };
+
+  const handleEditSave = () => {
     const updatedProducts = [...products];
     updatedProducts[editRow] = { ...editedProduct };
     setProducts(updatedProducts);
     setEditRow(null);
-    setShowModal(false);
+    setShowEditModal(false);
     setEditedProduct({});
   };
 
-  const handleCancel = () => {
+  const handleAddCancel = () => {
+    setShowAddModal(false);
+    setFormData({
+      category: '',
+      productName: '',
+      productDescription: '',
+      reOrderLevel: '',
+      expireAlertDays: '',
+      gst: true,
+      hst: true,
+      vat: true,
+      tax: true,
+      productCode: '',
+      useScale: true,
+      quantity: '',
+      unitOfScale: 'kg',
+      location: '',
+      rackName: '',
+      rackColumn: '',
+      rackRow: ''
+    });
+  };
+
+  const handleEditCancel = () => {
     setEditRow(null);
     setEditedProduct({});
-    setShowModal(false);
+    setShowEditModal(false);
   };
 
-  const handleChange = (e, field) => {
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleEditChange = (e, field) => {
     setEditedProduct({ ...editedProduct, [field]: e.target.value });
   };
 
@@ -135,7 +241,7 @@ const ProductTable = () => {
         fontWeight: '500'
       };
     } else if (stock.includes('In Stock')) {
-      const number = parseInt(stock.split(' ')[0]);
+      const number = parseInt(stock.split(' ')[0]) || 0;
       if (number <= 50) {
         return {
           backgroundColor: '#fff3e0',
@@ -191,8 +297,619 @@ const ProductTable = () => {
       overflow: 'hidden',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {/* Modal for editing */}
-      {showModal && (
+      {/* Add Product Modal */}
+      {showAddModal && (
+        <div style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{ 
+            backgroundColor: '#fff', 
+            borderRadius: '8px', 
+            width: '800px',
+            maxHeight: '90vh',
+            overflow: 'auto',
+            border: '3px solid #10b981',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+          }}>
+            {/* Header */}
+            <div style={{ 
+              backgroundColor: '#f8f9fa', 
+              padding: '15px 25px', 
+              borderBottom: '1px solid #e9ecef',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              borderTopLeftRadius: '5px',
+              borderTopRightRadius: '5px'
+            }}>
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: '20px', 
+                fontWeight: '600',
+                color: '#333'
+              }}>Add New Product</h2>
+              <button style={{
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '8px 16px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer'
+              }}>
+                Scan Barcode
+              </button>
+            </div>
+
+            {/* Form Content */}
+            <div style={{ padding: '25px' }}>
+              <div>
+                {/* First Row */}
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: '20px',
+                  marginBottom: '20px'
+                }}>
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Category <span style={{ color: '#dc3545' }}>*</span>
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <select 
+                        value={formData.category}
+                        onChange={e => handleInputChange('category', e.target.value)}
+                        style={{ 
+                          width: '100%', 
+                          padding: '10px 35px 10px 12px', 
+                          border: '1px solid #d1d5db', 
+                          borderRadius: '4px',
+                          fontSize: '14px',
+                          backgroundColor: '#fff',
+                          appearance: 'none'
+                        }}>
+                        <option value="">Select Category</option>
+                        <option value="Level 1 Cat">Level 1 Cat</option>
+                      </select>
+                      <div style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        pointerEvents: 'none',
+                        fontSize: '12px',
+                        color: '#6b7280'
+                      }}>▼</div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Product Name <span style={{ color: '#dc3545' }}>*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.productName}
+                      onChange={e => handleInputChange('productName', e.target.value)}
+                      style={{ 
+                        width: '100%', 
+                        padding: '10px 12px', 
+                        border: '1px solid #d1d5db', 
+                        borderRadius: '4px',
+                        fontSize: '14px'
+                      }} 
+                    />
+                  </div>
+                </div>
+
+                {/* Product Description */}
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ 
+                    display: 'block', 
+                    marginBottom: '8px', 
+                    fontSize: '14px', 
+                    fontWeight: '500',
+                    color: '#333'
+                  }}>
+                    Product Descriptions
+                  </label>
+                  <textarea 
+                    value={formData.productDescription}
+                    onChange={e => handleInputChange('productDescription', e.target.value)}
+                    style={{ 
+                      width: '100%', 
+                      padding: '10px 12px', 
+                      border: '1px solid #d1d5db', 
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      minHeight: '60px',
+                      resize: 'vertical'
+                    }} 
+                  />
+                </div>
+
+                {/* Second Row */}
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: '20px',
+                  marginBottom: '20px'
+                }}>
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Re Order Level (Stock) <span style={{ color: '#dc3545' }}>*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.reOrderLevel}
+                      onChange={e => handleInputChange('reOrderLevel', e.target.value)}
+                      style={{ 
+                        width: '100%', 
+                        padding: '10px 12px', 
+                        border: '1px solid #d1d5db', 
+                        borderRadius: '4px',
+                        fontSize: '14px'
+                      }} 
+                    />
+                  </div>
+                  
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Expire Alert Days <span style={{ color: '#dc3545' }}>*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.expireAlertDays}
+                      onChange={e => handleInputChange('expireAlertDays', e.target.value)}
+                      style={{ 
+                        width: '100%', 
+                        padding: '10px 12px', 
+                        border: '1px solid #d1d5db', 
+                        borderRadius: '4px',
+                        fontSize: '14px'
+                      }} 
+                    />
+                  </div>
+                </div>
+
+                {/* Tax Checkboxes */}
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '30px', 
+                  marginBottom: '25px',
+                  alignItems: 'center'
+                }}>
+                  {['gst', 'hst', 'vat', 'tax'].map((tax) => (
+                    <div key={tax} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ 
+                        fontSize: '16px', 
+                        fontWeight: '600', 
+                        color: '#9ca3af',
+                        minWidth: '40px'
+                      }}>
+                        {tax.toUpperCase()}
+                      </span>
+                      <div 
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          backgroundColor: formData[tax] ? '#10b981' : '#d1d5db',
+                          borderRadius: '3px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => handleInputChange(tax, !formData[tax])}
+                      >
+                        {formData[tax] && (
+                          <span style={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}>✓</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Third Row */}
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: '1fr 1fr', 
+                  gap: '20px',
+                  marginBottom: '20px'
+                }}>
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Image upload
+                    </label>
+                    <div style={{
+                      border: '2px dashed #d1d5db',
+                      borderRadius: '4px',
+                      padding: '20px',
+                      textAlign: 'center',
+                      backgroundColor: '#f9fafb',
+                      cursor: 'pointer'
+                    }}>
+                      <div style={{ fontSize: '24px', color: '#9ca3af', marginBottom: '8px' }}>📁</div>
+                      <span style={{ fontSize: '14px', color: '6b7280' }}>Click to upload</span>
+                    </div>
+                    
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '8px',
+                      marginTop: '10px'
+                    }}>
+                      <span style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '500', 
+                        color: '#333'
+                      }}>
+                        Use Scale
+                      </span>
+                      <div 
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          backgroundColor: formData.useScale ? '#10b981' : '#d1d5db',
+                          borderRadius: '3px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => handleInputChange('useScale', !formData.useScale)}
+                      >
+                        {formData.useScale && (
+                          <span style={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}>✓</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label style={{ 
+                      display: 'block', 
+                      marginBottom: '8px', 
+                      fontSize: '14px', 
+                      fontWeight: '500',
+                      color: '#333'
+                    }}>
+                      Product Code <span style={{ color: '#dc3545' }}>*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      value={formData.productCode}
+                      onChange={e => handleInputChange('productCode', e.target.value)}
+                      style={{ 
+                        width: '100%', 
+                        padding: '10px 12px', 
+                        border: '1px solid #d1d5db', 
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        marginBottom: '20px'
+                      }} 
+                    />
+
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: '1fr 1fr', 
+                      gap: '10px'
+                    }}>
+                      <div>
+                        <label style={{ 
+                          display: 'block', 
+                          marginBottom: '8px', 
+                          fontSize: '14px', 
+                          fontWeight: '500',
+                          color: '#333'
+                        }}>
+                          Quantity <span style={{ color: '#dc3545' }}>*</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          value={formData.quantity}
+                          onChange={e => handleInputChange('quantity', e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '10px 12px', 
+                            border: '1px solid #d1d5db', 
+                            borderRadius: '4px',
+                            fontSize: '14px'
+                          }} 
+                        />
+                      </div>
+                      
+                      <div>
+                        <label style={{ 
+                          display: 'block', 
+                          marginBottom: '8px', 
+                          fontSize: '14px', 
+                          fontWeight: '500',
+                          color: '#333'
+                        }}>
+                          Unit of Scale <span style={{ color: '#dc3545' }}>*</span>
+                        </label>
+                        <input 
+                          type="text" 
+                          value={formData.unitOfScale}
+                          onChange={e => handleInputChange('unitOfScale', e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '10px 12px', 
+                            border: '1px solid #d1d5db', 
+                            borderRadius: '4px',
+                            fontSize: '14px'
+                          }} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Location Section */}
+                <div style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '6px',
+                  padding: '20px',
+                  marginBottom: '25px',
+                  backgroundColor: '#fafafa'
+                }}>
+                  <h3 style={{ 
+                    margin: '0 0 15px 0', 
+                    fontSize: '16px', 
+                    fontWeight: '600',
+                    color: '#333'
+                  }}>
+                    Product Location
+                  </h3>
+                  
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr 1fr 1fr 1fr', 
+                    gap: '15px'
+                  }}>
+                    <div>
+                      <label style={{ 
+                        display: 'block', 
+                        marginBottom: '8px', 
+                        fontSize: '14px', 
+                        fontWeight: '500',
+                        color: '#333'
+                      }}>
+                        Location
+                      </label>
+                      <input 
+                        type="text" 
+                        value={formData.location}
+                        onChange={e => handleInputChange('location', e.target.value)}
+                        style={{ 
+                          width: '100%', 
+                          padding: '10px 12px', 
+                          border: '1px solid #d1d5db', 
+                          borderRadius: '4px',
+                          fontSize: '14px'
+                        }} 
+                      />
+                    </div>
+                    
+                    <div>
+                      <label style={{ 
+                        display: 'block', 
+                        marginBottom: '8px', 
+                        fontSize: '14px', 
+                        fontWeight: '500',
+                        color: '#333'
+                      }}>
+                        Rack Name <span style={{ color: '#dc3545' }}>*</span>
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <select 
+                          value={formData.rackName}
+                          onChange={e => handleInputChange('rackName', e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '10px 35px 10px 12px', 
+                            border: '1px solid #d1d5db', 
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                            backgroundColor: '#fff',
+                            appearance: 'none'
+                          }}>
+                          <option value="">Select Rack</option>
+                        </select>
+                        <div style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          pointerEvents: 'none',
+                          fontSize: '12px',
+                          color: '#6b7280'
+                        }}>▼</div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label style={{ 
+                        display: 'block', 
+                        marginBottom: '8px', 
+                        fontSize: '14px', 
+                        fontWeight: '500',
+                        color: '#333'
+                      }}>
+                        Rack Column <span style={{ color: '#dc3545' }}>*</span>
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <select 
+                          value={formData.rackColumn}
+                          onChange={e => handleInputChange('rackColumn', e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '10px 35px 10px 12px', 
+                            border: '1px solid #d1d5db', 
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                            backgroundColor: '#fff',
+                            appearance: 'none'
+                          }}>
+                          <option value="">Select Column</option>
+                        </select>
+                        <div style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          pointerEvents: 'none',
+                          fontSize: '12px',
+                          color: '#6b7280'
+                        }}>▼</div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label style={{ 
+                        display: 'block', 
+                        marginBottom: '8px', 
+                        fontSize: '14px', 
+                        fontWeight: '500',
+                        color: '#333'
+                      }}>
+                        Rack Row <span style={{ color: '#dc3545' }}>*</span>
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <select 
+                          value={formData.rackRow}
+                          onChange={e => handleInputChange('rackRow', e.target.value)}
+                          style={{ 
+                            width: '100%', 
+                            padding: '10px 35px 10px 12px', 
+                            border: '1px solid #d1d5db', 
+                            borderRadius: '4px',
+                            fontSize: '14px',
+                            backgroundColor: '#fff',
+                            appearance: 'none'
+                          }}>
+                          <option value="">Select Row</option>
+                        </select>
+                        <div style={{
+                          position: 'absolute',
+                          right: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          pointerEvents: 'none',
+                          fontSize: '12px',
+                          color: '#6b7280'
+                        }}>▼</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  paddingTop: '20px'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    backgroundColor: '#10b981',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer'
+                  }}
+                  onClick={handleAddSave}
+                  >
+                    <span style={{ color: 'white', fontSize: '20px', fontWeight: 'bold' }}>✓</span>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                      type="button"
+                      onClick={handleAddCancel}
+                      style={{ 
+                        padding: '10px 30px', 
+                        backgroundColor: '#fff', 
+                        color: '#dc3545', 
+                        border: '2px solid #dc3545', 
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={handleAddSave}
+                      style={{ 
+                        padding: '10px 30px', 
+                        backgroundColor: '#10b981', 
+                        color: '#fff', 
+                        border: 'none', 
+                        borderRadius: '6px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Add Product
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Product Modal */}
+      {showEditModal && (
         <div style={{
           position: 'fixed',
           top: 0,
@@ -234,7 +951,7 @@ const ProductTable = () => {
                 ✏️ Edit Product
               </h2>
               <button
-                onClick={handleCancel}
+                onClick={handleEditCancel}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -266,7 +983,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.name || ''}
-                  onChange={e => handleChange(e, 'name')}
+                  onChange={e => handleEditChange(e, 'name')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -294,7 +1011,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.code || ''}
-                  onChange={e => handleChange(e, 'code')}
+                  onChange={e => handleEditChange(e, 'code')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -322,7 +1039,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.barcode || ''}
-                  onChange={e => handleChange(e, 'barcode')}
+                  onChange={e => handleEditChange(e, 'barcode')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -350,7 +1067,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.category || ''}
-                  onChange={e => handleChange(e, 'category')}
+                  onChange={e => handleEditChange(e, 'category')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -378,7 +1095,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.tax || ''}
-                  onChange={e => handleChange(e, 'tax')}
+                  onChange={e => handleEditChange(e, 'tax')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -406,7 +1123,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.price || ''}
-                  onChange={e => handleChange(e, 'price')}
+                  onChange={e => handleEditChange(e, 'price')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -434,7 +1151,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.store || ''}
-                  onChange={e => handleChange(e, 'store')}
+                  onChange={e => handleEditChange(e, 'store')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -462,7 +1179,7 @@ const ProductTable = () => {
                 </label>
                 <input
                   value={editedProduct.warehouse || ''}
-                  onChange={e => handleChange(e, 'warehouse')}
+                  onChange={e => handleEditChange(e, 'warehouse')}
                   style={{
                     width: '100%',
                     padding: '12px',
@@ -487,7 +1204,7 @@ const ProductTable = () => {
               borderTop: '1px solid #e9ecef'
             }}>
               <button
-                onClick={handleCancel}
+                onClick={handleEditCancel}
                 style={{
                   padding: '12px 24px',
                   border: '2px solid #6c757d',
@@ -511,7 +1228,7 @@ const ProductTable = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSave}
+                onClick={handleEditSave}
                 style={{
                   padding: '12px 24px',
                   border: 'none',
@@ -533,7 +1250,7 @@ const ProductTable = () => {
         </div>
       )}
 
-      {/* Main Table */}
+      {/* Main Table Container */}
       <div style={{
         backgroundColor: '#ffffff',
         borderRadius: '12px',
@@ -541,15 +1258,51 @@ const ProductTable = () => {
         overflow: 'hidden',
         height: 'calc(100vh - 40px)',
         display: 'flex',
-        flexDirection: 'column',
-      
+        flexDirection: 'column'
       }}>
+        {/* Add Product Button */}
+        <div style={{
+          padding: '16px',
+          borderBottom: '1px solid #e9ecef',
+          backgroundColor: '#ffffff'
+        }}>
+          <button
+            onClick={handleAddClick}
+            style={{
+              background: 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#ffffff',
+              padding: '12px 24px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 8px 20px rgba(46, 204, 113, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = 'none';
+            }}
+          >
+            <span>➕</span>
+            Add Product
+          </button>
+        </div>
+
+        {/* Table */}
         <div style={{ overflow: 'auto', flexGrow: 1, width: '100%', maxWidth: '1300px' }}>
           <table style={{
             width: '1300px',
             borderCollapse: 'collapse',
             backgroundColor: '#ffffff',
-            tableLayout: 'fixed',
+            tableLayout: 'fixed'
           }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
               <tr>

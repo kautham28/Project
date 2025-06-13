@@ -36,28 +36,7 @@ const App = () => {
       <Sidebar />
       <div style={{ flex: 1, padding: '20px', backgroundColor: '#f5f5f5' }}>
         <TopNav />
-        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
-          <input
-            type="text"
-            placeholder="Search Products..."
-            style={{ padding: '5px', width: '200px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-          <input
-            type="text"
-            placeholder="Search product by name or id..."
-            onChange={(e) => setFilteredProducts(products.filter(p => p.name.includes(e.target.value) || p.code.includes(e.target.value)))}
-            style={{ padding: '5px', width: '150px', border: '1px solid #ccc', borderRadius: '4px' }}
-          />
-          <select style={{ padding: '5px', width: '150px', border: '1px solid #ccc', borderRadius: '4px' }}>
-            <option value="">Category</option>
-            <option value="Level 1 Cat">Level 1 Cat</option>
-          </select>
-          <input type="text" placeholder="Color" style={{ padding: '5px', width: '150px', border: '1px solid #ccc', borderRadius: '4px' }} />
-          <input type="text" placeholder="Thickness" style={{ padding: '5px', width: '150px', border: '1px solid #ccc', borderRadius: '4px' }} />
-          <input type="text" placeholder="Diameter" style={{ padding: '5px', width: '150px', border: '1px solid #ccc', borderRadius: '4px' }} />
-          <button onClick={handleRefresh} style={{ padding: '5px 10px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Refresh</button>
-          <button onClick={handleAddProduct} style={{ padding: '5px 10px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>+ Add Products</button>
-        </div>
+       
         <ProductTable products={filteredProducts} onEdit={handleEdit} />
         <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
