@@ -1260,40 +1260,179 @@ const ProductTable = () => {
         display: 'flex',
         flexDirection: 'column'
       }}>
-        {/* Add Product Button */}
+        {/* Filters and Search */}
         <div style={{
           padding: '16px',
           borderBottom: '1px solid #e9ecef',
-          backgroundColor: '#ffffff'
+          backgroundColor: '#ffffff',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '15px'
         }}>
-          <button
-            onClick={handleAddClick}
-            style={{
-              background: 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#ffffff',
-              padding: '12px 24px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
+          <div style={{ display: 'flex', alignItems: 'center', gap: '90px' }}>
+            <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Products</span>
+            <input
+              type="text"
+              placeholder="Search product by name or id..."
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                width: '200px'
+              }}
+            />
+            <select
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                width: '150px',
+                appearance: 'none',
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' fill=\'%236b7280\' viewBox=\'0 0 16 16\'%3E%3Cpath d=\'M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z\'/%3E%3C/svg%3E")',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 12px center'
+              }}
+            >
+              <option value="">Search By</option>
+            </select>
+            <button
+              onClick={handleAddClick}
+              style={{
+                background: 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
+                border: 'none',
+                borderRadius: '4px',
+                color: '#ffffff',
+                padding: '8px 16px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 12px rgba(46, 204, 113, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = 'none';
+              }}
+            >
+              <span>➕</span>
+              Add Products
+            </button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+            <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Category</span>
+            <input
+              type="text"
+              placeholder=""
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                width: '150px'
+              }}
+            />
+            <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Select Product</span>
+            <input
+              type="text"
+              placeholder="Search product by name or id..."
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                width: '200px'
+              }}
+            />
+            <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Short By</span>
+            <select
+              style={{
+                padding: '8px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+                fontSize: '14px',
+                width: '150px',
+                appearance: 'none',
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' fill=\'%236b7280\' viewBox=\'0 0 16 16\'%3E%3Cpath d=\'M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z\'/%3E%3C/svg%3E")',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right 12px center'
+              }}
+            >
+              <option value="">Short By</option>
+            </select>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '10px' }}>
+            <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 8px 20px rgba(46, 204, 113, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}
-          >
-            <span>➕</span>
-            Add Product
-          </button>
+              gap: '64px',
+              border: '3px solid #10b981',
+              borderRadius: '16px',
+              padding: '16px',
+              background: '#f9fefb',
+              width: 'fit-content'
+            }}>
+              <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Color</span>
+              <input
+                type="text"
+                placeholder=""
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  width: '150px'
+                }}
+              />
+              <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Thickness</span>
+              <input
+                type="text"
+                placeholder=""
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  width: '150px'
+                }}
+              />
+              <span style={{ fontSize: '16px', fontWeight: '600', color: '#495057' }}>Diameter</span>
+              <input
+                type="text"
+                placeholder=""
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  width: '150px'
+                }}
+              />
+            </div>
+            <button
+              style={{
+                backgroundColor: '#e9ecef',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '8px 12px',
+                fontSize: '14px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                color: '#495057'
+              }}
+            >
+              <span style={{ marginRight: '4px' }}>🔄</span>
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* Table */}

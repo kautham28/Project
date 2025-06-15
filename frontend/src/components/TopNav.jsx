@@ -1,7 +1,22 @@
 import React from 'react';
 
 const TopNav = () => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderBottom: '1px solid #ddd', backgroundColor: '#fff', maxWidth: '100vw', boxSizing: 'border-box', overflowX: 'hidden' }}>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '6px 24px',
+    borderBottom: '1px solid #ddd',
+    backgroundColor: '#fff',
+    width: 'calc(100vw - 150px)', // 150px is the sidebar width
+    marginLeft: '150px', // push right to start after sidebar
+    boxSizing: 'border-box',
+    overflowX: 'hidden',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 1000
+  }}>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <input type="text" placeholder="Search Products..." style={{ padding: '5px', width: '160px', border: '1px solid #ccc', borderRadius: '4px', marginRight: '8px' }} />
       <div style={{ position: 'relative', display: 'inline-block' }}>

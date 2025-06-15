@@ -32,11 +32,11 @@ const App = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Arial, sans-serif', overflow: 'hidden' }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: '20px', backgroundColor: '#f5f5f5' }}>
+      <div style={{ flex: 1, padding: '70px 20px 20px 20px', backgroundColor: '#f5f5f5', overflow: 'auto', minWidth: 0 }}>
         <TopNav />
-       
+        
         <ProductTable products={filteredProducts} onEdit={handleEdit} />
         <AddProductModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       </div>
